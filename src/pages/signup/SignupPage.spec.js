@@ -3,6 +3,8 @@ import SignupPage from "./SignupPage"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import axios from "axios"
+import { setupServer } from "msw/node"
+import { rest } from "msw/"
 
 describe("Sign up page", () => {
   describe("Page Layout ", () => {
@@ -54,7 +56,15 @@ describe("Sign up page", () => {
       expect(submitBtn).not.toBeDisabled()
     })
 
-    it("sign in functionality check ", () => {
+    it("sign in functionality check ", async () => {
+      let reqBody
+      const server = setupServer(
+        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
+          reqBody = req.body
+          return res(ctx.status(200))
+        })
+      )
+      server.listen()
       const username = screen.getByLabelText("Username")
       const email = screen.getByLabelText("Email")
       const pass = screen.getByPlaceholderText("password")
@@ -65,26 +75,12 @@ describe("Sign up page", () => {
       userEvent.type(passRep, "p4ssword")
       const submitBtn = screen.getByRole("button", { name: "Sign up" })
 
-      // create moc function with axios
-      const mockFn = jest.fn()
-      // axios.post = mockFn
-      window.fetch = mockFn
-
       // clicking on submit button
       userEvent.click(submitBtn)
 
-      // getting first call of calls list
-      const firstCallOfMockFunction = mockFn.mock.calls[0]
+      await new Promise((res) => setTimeout(res, 500))
 
-      // extracting body form first call
-      // const body = firstCallOfMockFunction[1]
-      const fetchbody = JSON.parse(firstCallOfMockFunction[1].body)
-      // expect(body).toEqual({
-      //   username: "user1",
-      //   email: "user1@mail.com",
-      //   password: "p4ssword",
-      // })
-      expect(fetchbody).toEqual({
+      expect(reqBody).toEqual({
         username: "user1",
         email: "user1@mail.com",
         password: "p4ssword",
