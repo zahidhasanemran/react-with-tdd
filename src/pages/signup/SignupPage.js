@@ -8,18 +8,6 @@ const SignupPage = () => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  //   useEffect(() => {
-  //     let timer;
-  //     if (disable) {
-  //       timer = setTimeout(() => {
-  //         console.log("disable false");
-  //         setDisable(false);
-  //       }, 1000);
-  //     }
-
-  //     return () => clearTimeout(timer);
-  //   }, [disable]);
-
   const Submit = (e) => {
     e.preventDefault()
     const body = {
@@ -27,7 +15,7 @@ const SignupPage = () => {
       email,
       password,
     }
-    fetch("http://localhost:8080/api/1.0/users", {
+    fetch("/api/1.0/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
