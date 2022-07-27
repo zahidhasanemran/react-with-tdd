@@ -33,7 +33,7 @@ const SignupPage = () => {
   }, [password, confirmPassword])
 
   return (
-    <div>
+    <div className="signup">
       <h2> SIGN UP </h2>
       <form>
         <div className="singleInput">

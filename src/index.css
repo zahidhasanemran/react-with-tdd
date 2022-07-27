@@ -1,13 +1,62 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+body {
+  background: #ddd;
+}
+
+.signup {
+  width: 400px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  padding: 50px;
+  border-radius: 5px;
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+.singleInput:first-child {
+  margin-top: 40px;
+}
+.singleInput label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.singleInput input {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  width: 100%;
+}
+.singleInput {
+  margin-bottom: 20px;
+}
+
+button:hover {
+  background: #fff;
+  border-color: green;
+  color: #000;
+}
+button {
+  border: 1px solid #fff;
+  background: green;
+  padding: 10px 20px;
+  color: #fff;
+  border-radius: 3px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: 0.3s linear;
 }
