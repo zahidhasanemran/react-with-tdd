@@ -67,7 +67,8 @@ describe("Sign up page", () => {
 
       // create moc function with axios
       const mockFn = jest.fn()
-      axios.post = mockFn
+      // axios.post = mockFn
+      window.fetch = mockFn
 
       // clicking on submit button
       userEvent.click(submitBtn)
@@ -76,9 +77,14 @@ describe("Sign up page", () => {
       const firstCallOfMockFunction = mockFn.mock.calls[0]
 
       // extracting body form first call
-      const body = firstCallOfMockFunction[1]
-      console.log(firstCallOfMockFunction[0])
-      expect(body).toEqual({
+      // const body = firstCallOfMockFunction[1]
+      const fetchbody = JSON.parse(firstCallOfMockFunction[1].body)
+      // expect(body).toEqual({
+      //   username: "user1",
+      //   email: "user1@mail.com",
+      //   password: "p4ssword",
+      // })
+      expect(fetchbody).toEqual({
         username: "user1",
         email: "user1@mail.com",
         password: "p4ssword",
