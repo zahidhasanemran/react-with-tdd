@@ -40,7 +40,7 @@ const SignupPage = () => {
 
   if (loading) {
     return (
-      <div className="loading" role="status">
+      <div className="loading" role="status" aria-hidden="true">
         <h2>Loading</h2>
       </div>
     )
