@@ -7,6 +7,7 @@ const SignupPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const Submit = (e) => {
     e.preventDefault()
@@ -15,13 +16,18 @@ const SignupPage = () => {
       email,
       password,
     }
-    fetch("/api/1.0/users", {
+    setLoading(true)
+    fetch("http://localhost:8080/api/1.0/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     })
+      .then((res) => {
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
   }
 
   useEffect(() => {
@@ -78,7 +84,11 @@ const SignupPage = () => {
           />
         </div>
         <div className="singleInput">
-          <button onClick={(e) => Submit(e)} type="submit" disabled={disable}>
+          <button
+            onClick={(e) => Submit(e)}
+            type="submit"
+            disabled={disable || loading}
+          >
             Sign up
           </button>
         </div>
