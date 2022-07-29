@@ -123,11 +123,18 @@ describe("Sign up page", () => {
       )
       server.listen()
       setup()
+      expect(
+        screen.queryByRole("status", { hidden: true })
+      ).not.toBeInTheDocument()
       userEvent.click(submitBtn)
-
       const spinner = screen.getByRole("status", { hidden: true })
-
       expect(spinner).toBeInTheDocument()
+    })
+    it("spinenr should not show when no api calling", async () => {
+      setup()
+      const spinner = screen.queryByRole("status", { hidden: true })
+
+      expect(spinner).not.toBeInTheDocument()
     })
   })
 })
