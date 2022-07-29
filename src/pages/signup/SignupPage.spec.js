@@ -115,5 +115,19 @@ describe("Sign up page", () => {
 
       expect(counter).toBe(1)
     })
+    it("should show a spinner with status role", async () => {
+      const server = setupServer(
+        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
+          return res(ctx.status(200))
+        })
+      )
+      server.listen()
+      setup()
+      userEvent.click(submitBtn)
+
+      const spinner = screen.getByRole("status")
+
+      expect(spinner).toBeInTheDocument()
+    })
   })
 })

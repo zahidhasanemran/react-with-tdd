@@ -38,6 +38,14 @@ const SignupPage = () => {
     }
   }, [password, confirmPassword])
 
+  if (loading) {
+    return (
+      <div className="loading" role="status">
+        <h2>Loading</h2>
+      </div>
+    )
+  }
+
   return (
     <div className="signup">
       <h2> SIGN UP </h2>
