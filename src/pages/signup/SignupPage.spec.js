@@ -4,46 +4,39 @@
 import SignupPage from "./SignupPage"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import axios from "axios"
 import { setupServer } from "msw/node"
 import { rest } from "msw/"
 import { act } from "react-dom/test-utils"
 
 describe("Sign up page", () => {
-  describe("Page Layout ", () => {
-    // beforeEach(() => {
-    //   render(<SignupPage />)
-    // })
-    it("has a heading with text Sign Up", () => {
+  describe("Page Layout", () => {
+    beforeEach(() => {
       render(<SignupPage />)
+    })
+    it("has a heading with text Sign Up", () => {
       const header = screen.getByRole("heading", { name: "SIGN UP" })
       expect(header).toBeInTheDocument()
     })
 
     it("has username input", () => {
-      render(<SignupPage />)
       const username = screen.getByPlaceholderText("username")
       expect(username).toBeInTheDocument()
     })
     it("has email input", () => {
-      render(<SignupPage />)
       const email = screen.getByPlaceholderText("email")
       expect(email).toBeInTheDocument()
     })
     it("has password repeat input", () => {
-      render(<SignupPage />)
       const passwordrepeat = screen.getByPlaceholderText("password repeat")
       expect(passwordrepeat).toBeInTheDocument()
     })
     it("has button wiht type submit", () => {
-      render(<SignupPage />)
       const submitButton = screen.getByRole("button", {
         name: "Sign up",
       })
       expect(submitButton).toBeInTheDocument()
     })
     it("should be disabled by default", async () => {
-      render(<SignupPage />)
       const submitButton = screen.getByRole("button", {
         name: "Sign up",
       })
@@ -56,6 +49,18 @@ describe("Sign up page", () => {
     beforeEach(() => {
       render(<SignupPage />)
     })
+    let submitBtn
+    const setup = () => {
+      const username = screen.getByLabelText("Username")
+      const email = screen.getByLabelText("Email")
+      const pass = screen.getByPlaceholderText("password")
+      const passRep = screen.getByPlaceholderText("password repeat")
+      userEvent.type(username, "user1")
+      userEvent.type(email, "user1@mail.com")
+      userEvent.type(pass, "P4ssword")
+      userEvent.type(passRep, "P4ssword")
+      submitBtn = screen.getByRole("button", { name: "Sign up" })
+    }
 
     it("enable submit button after typing password and repeat password", () => {
       const pass = screen.getByPlaceholderText("password")
@@ -75,16 +80,7 @@ describe("Sign up page", () => {
         })
       )
       server.listen()
-      const username = screen.getByLabelText("Username")
-      const email = screen.getByLabelText("Email")
-      const pass = screen.getByPlaceholderText("password")
-      const passRep = screen.getByPlaceholderText("password repeat")
-      userEvent.type(username, "user1")
-      userEvent.type(email, "user1@mail.com")
-      userEvent.type(pass, "P4ssword")
-      userEvent.type(passRep, "P4ssword")
-      const submitBtn = screen.getByRole("button", { name: "Sign up" })
-
+      setup()
       // clicking on submit button
       userEvent.click(submitBtn)
 
@@ -107,15 +103,7 @@ describe("Sign up page", () => {
         })
       )
       server.listen()
-      const username = screen.getByLabelText("Username")
-      const email = screen.getByLabelText("Email")
-      const pass = screen.getByPlaceholderText("password")
-      const passRep = screen.getByPlaceholderText("password repeat")
-      userEvent.type(username, "user1")
-      userEvent.type(email, "user1@mail.com")
-      userEvent.type(pass, "p4ssword")
-      userEvent.type(passRep, "p4ssword")
-      const submitBtn = screen.getByRole("button", { name: "Sign up" })
+      setup()
 
       // clicking on submit button
       userEvent.click(submitBtn)
