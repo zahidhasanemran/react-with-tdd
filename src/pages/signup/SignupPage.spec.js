@@ -84,10 +84,7 @@ describe("Sign up page", () => {
       // clicking on submit button
       userEvent.click(submitBtn)
 
-      await act(async () => {
-        await new Promise((res) => setTimeout(res, 1000))
-      })
-
+      await screen.findByText("please check email to activate your account")
       expect(reqBody).toEqual({
         username: "user1",
         email: "user1@mail.com",
