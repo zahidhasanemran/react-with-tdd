@@ -2,7 +2,12 @@
 /* eslint-disable testing-library/no-debugging-utils */
 /* eslint-disable testing-library/no-render-in-setup */
 import SignupPage from "./SignupPage"
-import { render, screen } from "@testing-library/react"
+import {
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { setupServer } from "msw/node"
 import { rest } from "msw/"
@@ -152,6 +157,25 @@ describe("Sign up page", () => {
       // let text = await screen.findByText(message)
       expect(text).toBeInTheDocument()
       // await screen.findByText(message)
+    })
+    it("hide form when success", async () => {
+      const server = setupServer(
+        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
+          return res(ctx.status(200))
+        })
+      )
+      server.listen()
+      setup()
+      const message = "please check email to activate your account"
+      const form = screen.getByTestId("form-test-id")
+      userEvent.click(submitBtn)
+
+      // METHOD 1
+      await waitFor(() => {
+        expect(form).not.toBeInTheDocument()
+      })
+
+      await screen.findByText(message)
     })
   })
 })

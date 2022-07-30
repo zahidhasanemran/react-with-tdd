@@ -1,4 +1,3 @@
-import axios from "axios"
 import React, { useEffect, useState } from "react"
 
 const SignupPage = () => {
@@ -81,63 +80,64 @@ const SignupPage = () => {
   return (
     <div className="signup">
       <h2> SIGN UP </h2>
-      <form>
-        {success && (
+      {success ? (
+        <div className="singleInput">
+          <p>please check email to activate your account</p>
+        </div>
+      ) : (
+        <form data-testid="form-test-id">
           <div className="singleInput">
-            <p>please check email to activate your account</p>
+            <label htmlFor="username">Username</label>
+            <input
+              onChange={(e) => setUsername(e.target.value)}
+              type="text"
+              id="username"
+              placeholder="username"
+            />
           </div>
-        )}
-        <div className="singleInput">
-          <label htmlFor="username">Username</label>
-          <input
-            onChange={(e) => setUsername(e.target.value)}
-            type="text"
-            id="username"
-            placeholder="username"
-          />
-        </div>
-        <div className="singleInput">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            // pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
-            id="email"
-            placeholder="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="singleInput">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="password"
-            min="4"
-            max="6"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="singleInput">
-          <label htmlFor="passwordRepeat">Password repeat</label>
-          <input
-            type="password"
-            id="passwordRepeat"
-            min="4"
-            max="6"
-            placeholder="password repeat"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
-        <div className="singleInput">
-          <button
-            onClick={(e) => Submit(e)}
-            type="submit"
-            disabled={disable || loading}
-          >
-            Sign up
-          </button>
-        </div>
-      </form>
+          <div className="singleInput">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              // pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+              id="email"
+              placeholder="email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="singleInput">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="password"
+              min="4"
+              max="6"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="singleInput">
+            <label htmlFor="passwordRepeat">Password repeat</label>
+            <input
+              type="password"
+              id="passwordRepeat"
+              min="4"
+              max="6"
+              placeholder="password repeat"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <div className="singleInput">
+            <button
+              onClick={(e) => Submit(e)}
+              type="submit"
+              disabled={disable || loading}
+            >
+              Sign up
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   )
 }
