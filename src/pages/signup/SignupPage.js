@@ -8,6 +8,7 @@ const SignupPage = () => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   const Submit = (e) => {
     e.preventDefault()
@@ -25,18 +26,49 @@ const SignupPage = () => {
       body: JSON.stringify(body),
     })
       .then((res) => {
+        if (res.status == 200) {
+          setLoading(false)
+          setSuccess(true)
+        }
+      })
+      .catch(() => {
         setLoading(false)
       })
-      .catch(() => setLoading(false))
   }
 
   useEffect(() => {
-    if (password && confirmPassword && password === confirmPassword) {
+    let isMounted = true
+    if (
+      isMounted &&
+      password &&
+      confirmPassword &&
+      password === confirmPassword
+    ) {
       setDisable(false)
     } else {
       setDisable(true)
     }
+    return () => {
+      isMounted = false
+    }
   }, [password, confirmPassword])
+
+  useEffect(() => {
+    let timer
+    let isMounted = true
+    if (success) {
+      timer = setTimeout(() => {
+        if (isMounted) {
+          setSuccess(false)
+        }
+      }, 2000)
+    }
+
+    return () => {
+      clearTimeout(timer)
+      isMounted = false
+    }
+  }, [success])
 
   if (loading) {
     return (
@@ -50,6 +82,11 @@ const SignupPage = () => {
     <div className="signup">
       <h2> SIGN UP </h2>
       <form>
+        {success && (
+          <div className="singleInput">
+            <p>please check email to activate your account</p>
+          </div>
+        )}
         <div className="singleInput">
           <label htmlFor="username">Username</label>
           <input

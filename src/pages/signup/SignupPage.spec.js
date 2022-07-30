@@ -129,12 +129,32 @@ describe("Sign up page", () => {
       userEvent.click(submitBtn)
       const spinner = screen.getByRole("status", { hidden: true })
       expect(spinner).toBeInTheDocument()
+      await screen.findByText("please check email to activate your account")
     })
     it("spinenr should not show when no api calling", async () => {
       setup()
       const spinner = screen.queryByRole("status", { hidden: true })
 
       expect(spinner).not.toBeInTheDocument()
+    })
+    it("should show a message please check email to activate your account", async () => {
+      const server = setupServer(
+        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
+          return res(ctx.status(200))
+        })
+      )
+      server.listen()
+      setup()
+      const message = "please check email to activate your account"
+      expect(screen.queryByText(message)).not.toBeInTheDocument()
+      userEvent.click(submitBtn)
+      let text
+      await act(async () => {
+        text = await screen.findByText(message)
+      })
+      // let text = await screen.findByText(message)
+      expect(text).toBeInTheDocument()
+      // await screen.findByText(message)
     })
   })
 })
