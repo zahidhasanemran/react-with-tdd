@@ -2,12 +2,7 @@
 /* eslint-disable testing-library/no-debugging-utils */
 /* eslint-disable testing-library/no-render-in-setup */
 import SignupPage from "./SignupPage"
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { setupServer } from "msw/node"
 import { rest } from "msw/"
@@ -51,11 +46,10 @@ describe("Sign up page", () => {
   })
 
   describe("Interaction", () => {
-    beforeEach(() => {
-      render(<SignupPage />)
-    })
     let submitBtn
+    const message = "please check email to activate your account"
     const setup = () => {
+      render(<SignupPage />)
       const username = screen.getByLabelText("Username")
       const email = screen.getByLabelText("Email")
       const pass = screen.getByPlaceholderText("password")
@@ -67,7 +61,21 @@ describe("Sign up page", () => {
       submitBtn = screen.getByRole("button", { name: "Sign up" })
     }
 
+    let reqBody
+    let counter
+    const server = setupServer(
+      rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
+        reqBody = req.body
+        counter = counter + 1
+        return res(ctx.status(200))
+      })
+    )
+
+    beforeAll(() => server.listen())
+    afterAll(() => server.close())
+
     it("enable submit button after typing password and repeat password", () => {
+      setup()
       const pass = screen.getByPlaceholderText("password")
       const passRep = screen.getByPlaceholderText("password repeat")
       userEvent.type(pass, "p4ssword")
@@ -77,36 +85,21 @@ describe("Sign up page", () => {
     })
 
     it("sign in functionality check", async () => {
-      let reqBody
-      const server = setupServer(
-        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
-          reqBody = req.body
-          return res(ctx.status(200))
-        })
-      )
-      server.listen()
       setup()
       // clicking on submit button
       userEvent.click(submitBtn)
 
-      await screen.findByText("please check email to activate your account")
+      await screen.findByText(message)
       expect(reqBody).toEqual({
         username: "user1",
         email: "user1@mail.com",
         password: "P4ssword",
       })
     })
-    it("Submit button is disabled 2nd time", async () => {
-      let counter = 0
-      const server = setupServer(
-        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
-          counter += 1
-          return res(ctx.status(200))
-        })
-      )
-      server.listen()
-      setup()
 
+    it("Submit button is disabled 2nd time", async () => {
+      counter = 0
+      setup()
       // clicking on submit button
       userEvent.click(submitBtn)
       userEvent.click(submitBtn)
@@ -117,13 +110,8 @@ describe("Sign up page", () => {
 
       expect(counter).toBe(1)
     })
+
     it("should show a spinner with status role", async () => {
-      const server = setupServer(
-        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
-          return res(ctx.status(200))
-        })
-      )
-      server.listen()
       setup()
       expect(
         screen.queryByRole("status", { hidden: true })
@@ -131,23 +119,17 @@ describe("Sign up page", () => {
       userEvent.click(submitBtn)
       const spinner = screen.getByRole("status", { hidden: true })
       expect(spinner).toBeInTheDocument()
-      await screen.findByText("please check email to activate your account")
+      await screen.findByText(message)
     })
+
     it("spinenr should not show when no api calling", async () => {
       setup()
       const spinner = screen.queryByRole("status", { hidden: true })
-
       expect(spinner).not.toBeInTheDocument()
     })
+
     it("should show a message please check email to activate your account", async () => {
-      const server = setupServer(
-        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
-          return res(ctx.status(200))
-        })
-      )
-      server.listen()
       setup()
-      const message = "please check email to activate your account"
       expect(screen.queryByText(message)).not.toBeInTheDocument()
       userEvent.click(submitBtn)
       let text
@@ -158,15 +140,10 @@ describe("Sign up page", () => {
       expect(text).toBeInTheDocument()
       // await screen.findByText(message)
     })
+
     it("hide form when success", async () => {
-      const server = setupServer(
-        rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
-          return res(ctx.status(200))
-        })
-      )
-      server.listen()
       setup()
-      const message = "please check email to activate your account"
+
       const form = screen.getByTestId("form-test-id")
       userEvent.click(submitBtn)
 
