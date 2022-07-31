@@ -1,3 +1,4 @@
+import axios from "axios"
 import React, { useEffect, useState } from "react"
 
 const SignupPage = () => {
@@ -8,8 +9,9 @@ const SignupPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [errors, setErrors] = useState({})
 
-  const Submit = (e) => {
+  const Submit = async (e) => {
     e.preventDefault()
     const body = {
       username,
@@ -17,22 +19,25 @@ const SignupPage = () => {
       password,
     }
     setLoading(true)
-    fetch("http://localhost:8080/api/1.0/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    })
-      .then((res) => {
-        if (res.status == 200) {
-          setLoading(false)
-          setSuccess(true)
-        }
-      })
-      .catch(() => {
-        setLoading(false)
-      })
+    try {
+      // let res = await fetch("/api/1.0/users", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(body),
+      // })
+      let res = await axios.post("/api/1.0/users", body)
+      if (res?.status === 200) {
+        setSuccess(true)
+      }
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      if (error.response.status === 400) {
+        setErrors(error?.response?.data?.validationErrors)
+      }
+    }
   }
 
   useEffect(() => {
@@ -94,6 +99,7 @@ const SignupPage = () => {
               id="username"
               placeholder="username"
             />
+            {errors?.username && <p>{errors.username}</p>}
           </div>
           <div className="singleInput">
             <label htmlFor="email">Email</label>
@@ -110,6 +116,7 @@ const SignupPage = () => {
             <input
               type="password"
               id="password"
+              // defaultValue={12345678}
               placeholder="password"
               min="4"
               max="6"
@@ -121,6 +128,7 @@ const SignupPage = () => {
             <input
               type="password"
               id="passwordRepeat"
+              // defaultValue={12345678}
               min="4"
               max="6"
               placeholder="password repeat"

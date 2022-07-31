@@ -40,11 +40,10 @@ describe("Sign up page", () => {
       const submitButton = screen.getByRole("button", {
         name: "Sign up",
       })
-      await new Promise((res) => setTimeout(res, 1000))
+      expect(submitButton).toBeInTheDocument()
       expect(submitButton).toBeDisabled()
     })
   })
-
   describe("Interaction", () => {
     let submitBtn
     const message = "please check email to activate your account"
@@ -64,7 +63,7 @@ describe("Sign up page", () => {
     let reqBody
     let counter
     const server = setupServer(
-      rest.post("http://localhost:8080/api/1.0/users", (req, res, ctx) => {
+      rest.post("/api/1.0/users", (req, res, ctx) => {
         reqBody = req.body
         counter = counter + 1
         return res(ctx.status(200))
@@ -153,6 +152,25 @@ describe("Sign up page", () => {
       })
 
       await screen.findByText(message)
+    })
+
+    it("should show validation error for username", async () => {
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            ctx.json({
+              validationErrors: {
+                username: "Username cannot be null",
+              },
+            })
+          )
+        })
+      )
+      setup()
+      userEvent.click(submitBtn)
+      const usernameError = await screen.findByText("Username cannot be null")
+      expect(usernameError).toBeInTheDocument()
     })
   })
 })
